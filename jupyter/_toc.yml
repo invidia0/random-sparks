@@ -1,0 +1,15 @@
+format: jb-book
+root: intro
+
+parts:
+  - caption: Papers
+    chapters:
+    - file: docs/papers/gaussian_processes_overview
+      sections:
+      - file: docs/papers/gaussian_processes/pre-trained_gaussian_processes_for_bayesian_optimization
+
+  - caption: Machine Learning
+    chapters:
+    - file: docs/machine_learning/probabilistic_ml_overview
+      sections:
+      - file: docs/machine_learning/probabilistic_ml/bo
