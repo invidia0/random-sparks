@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Probability - Basic concepts &#8212; Random Sparks</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/machine_learning/probabilistic_ml/basics_1';</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/random-sparks.png" class="logo__image only-light" alt="Random Sparks - Home"/>
+    <script>document.write(`<img src="../../../_static/random-sparks.png" class="logo__image only-dark" alt="Random Sparks - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../intro.html">
+                    Welcome to Random Sparks 💥
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Papers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../papers/gaussian_processes_overview.html">Gaussian Processes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../papers/gaussian_processes/pre-trained_gaussian_processes_for_bayesian_optimization.html">Pre-Trained Gaussian Processes for Bayesian Optimization</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Machine Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../probabilistic_ml_overview.html">Probabilistic Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Probability - Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bo.html">Bayesian Optimization</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/invidia0/random-sparks" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../_sources/docs/machine_learning/probabilistic_ml/basics_1.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Probability - Basic concepts</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="probability-basic-concepts">
+<h1>Probability - Basic concepts<a class="headerlink" href="#probability-basic-concepts" title="Link to this heading">#</a></h1>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-g-1 sd-g-xs-1 sd-g-sm-1 sd-g-md-1 sd-g-lg-1 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<strong>What is Probability?</strong></div>
+<p class="sd-card-text">Given some <strong>events</strong>, probability describes them numerically and how likely they are to occur.</p>
+</div>
+</div>
+</div>
+<p>In this spark, we will go through the basics of probability theory concepts. After crusing my head on this topic for a while, I found that everyone is basically giving its own fancy version/notation about everything in this field. In the following I’ll try to give you a simple, intuitive and real-world applications-grounded formulation of these concepts from a humble PhD student perspective. A lot of the concepts are drawn from online materials and university courses (<a class="reference external" href="https://ermongroup.github.io/cs228-notes/preliminaries/probabilityreview/">like this one</a>)</p>
+<h2 class="rubric" id="concepts-of-probability">Concepts of Probability</h2>
+<p>Throughout this chapter we will consider a <strong>parametric formulation</strong> of probability concepts.</p>
+<h3 class="rubric" id="independent-and-identically-distributed-iid">Independent and identically distributed (IID)</h3>
+<p>A collection of random variables is IID if each random variable has the same probability distribution as the others and all are mutually independent. It’s almost the same as saying “random sampling”.</p>
+<ul class="simple">
+<li><p><strong>Identically distributed</strong> → this means that in the data there are no trends.</p></li>
+<li><p><strong>Independent</strong> → this means that the sample items are all independent and they are not connected to each other in any way.</p></li>
+</ul>
+<h3 class="rubric" id="prior-probability">Prior probability</h3>
+<p>A <strong>prior probability distribution</strong> of an uncertain quantity, simply called the <strong>prior</strong>, is the probability distribution of our model’s parameters before some evidence is taken into account.</p>
+<p>This can be the prior belies that we have about our parameters. Usually, we have some ways-to-go as prior distributions:</p>
+<ul class="simple">
+<li><p><strong>Gaussian</strong></p></li>
+<li><p><strong>Uniform</strong></p></li>
+<li><p><strong>Beta</strong></p></li>
+<li><p><strong>Bernoulli</strong></p></li>
+</ul>
+<p>In general the design of a prior distribution is very case-dependent. Sometimes you can hear about “uninformative”, flat, or diffuse priors expressing vague or general information about a random variable.</p>
+<h3 class="rubric" id="posterior-probability">Posterior probability</h3>
+<p>In probability theory, the <strong>posterior probability</strong> is a type of <strong>conditional probability</strong> i.e., the probability of an event occurring given that another has occurred. The official formulation is</p>
+<div class="math notranslate nohighlight">
+\[
+P(A|B)=\dfrac{P(A\cap B)}{P(B)},
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(P(A \cap B)\)</span> is the probability of <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> happening at the same time. This quantity is usually unknown. <span class="math notranslate nohighlight">\(P(B)\)</span> is called the marginal distribution.</p>
+<p>In practice, the marginal is almost always intractable to compute in closed form. Typically, what we have instead is a joint distribution <span class="math notranslate nohighlight">\(p(x,y)\)</span>, describing the probability of pairs <span class="math notranslate nohighlight">\((x,y) \in X \times Y\)</span> falling within certain ranges or discrete values. To obtain the marginal distribution of a variable <span class="math notranslate nohighlight">\(X\)</span>, we remove the influence of the other variable <span class="math notranslate nohighlight">\(Y\)</span>—a process known as marginalization.</p>
+<p>But we are still missing information about <span class="math notranslate nohighlight">\(P(A \cap B)\)</span>. At this point, it’s fair to say that in most cases we deal with limited information. The main theorem that allows us to update our knowledge under such conditions is Bayes’ theorem, which is the foundation of Bayesian inference. This will be very useful in the upcoming section on <a class="reference internal" href="#bayesian-inference"><span class="xref myst">Bayesian Inference</span></a>.</p>
+<h4 class="rubric" id="bayes-rule">Bayes’ Rule</h4>
+<p>For events A and B, the Bayes’ theorem says</p>
+<div class="math notranslate nohighlight">
+\[
+P(A|B) = \dfrac{P(B|A)P(A)}{P(B)},
+\]</div>
+<p>in Bayesian inference, the event B is fixed in the discussion and we wish to consider the effect of its having been observed on our belief in various possible events A.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P(A|B)\)</span> → the <strong>posterior probability</strong>, our updated belief in <span class="math notranslate nohighlight">\(A\)</span> after observing <span class="math notranslate nohighlight">\(B\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(B|A)\)</span> → the <strong>likelihood</strong>, how compatible <span class="math notranslate nohighlight">\(B\)</span> is with <span class="math notranslate nohighlight">\(A\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(A)\)</span> → the <strong>prior probability</strong>, our belief in <span class="math notranslate nohighlight">\(A\)</span> before seeing <span class="math notranslate nohighlight">\(B\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(B)\)</span> → the <strong>marginal probability</strong>, the overall probability of observing <span class="math notranslate nohighlight">\(B\)</span> across all possible <span class="math notranslate nohighlight">\(A\)</span>.</p></li>
+<li></li>
+</ul>
+<p>This theorem has countless applications and underpins many probabilistic methods. For our purposes, we will revisit it intuitively in its parametric form in <a class="reference internal" href="#bayesian-inference"><span class="xref myst">Bayesian Inference</span></a>.</p>
+<h3 class="rubric" id="likelihood-function">Likelihood function</h3>
+<p><strong>Likelihood</strong> measures how well a statistical model explains observed data by calculating the probability of seeing that data under different parameter values of the model.</p>
+<ul class="simple">
+<li><p><strong>High likelihood</strong> → the parameters make the observed data very plausible.</p></li>
+<li><p><strong>Low likelihood</strong> → the parameters make the observed data unlikely.</p></li>
+</ul>
+<div class="note dropdown admonition">
+<p class="admonition-title"><strong>Hyperparameters vs Parameters</strong></p>
+<p>This is usually a misunderstood concept in machine learning. Let’s clarify this intuitively.<br />
+<strong>Parameters</strong><br />
+Parameters are learned from data.</p>
+<ul class="simple">
+<li><p>Weights in a neural network.</p></li>
+<li><p>Regression coefficients in linear regression.</p></li>
+</ul>
+<p><strong>Hyperparameters</strong><br />
+Hyperparameters are <strong>set before</strong> and not learned directly from data.</p>
+<ul class="simple">
+<li><p>Learning rate</p></li>
+<li><p>Stopping criterion</p></li>
+<li><p>Number of layers in a neural network.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Hyperparameters</span> <span class="pre">govern</span> <span class="pre">the</span> <span class="pre">model/algorithm</span> <span class="pre">setup;</span> <span class="pre">parameters</span> <span class="pre">are</span> <span class="pre">learned</span> <span class="pre">from</span> <span class="pre">data.</span></code></p>
+</div>
+<p>Usually we talk about a <strong>likelihood function</strong>, in fact given a probability density or mass function <span class="math notranslate nohighlight">\(f\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+x \mapsto f(x | \theta),
+\]</div>
+<p>where x is from a random variable <span class="math notranslate nohighlight">\(X\)</span>. Then the likelihood function is defined as</p>
+<div class="math notranslate nohighlight">
+\[
+\theta \mapsto f(x|\theta),
+\]</div>
+<p>usually</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}(\theta | x).
+\]</div>
+<p>The concept is simple, we can view the function <span class="math notranslate nohighlight">\(f\)</span> in two different ways:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span> fixed: the function is a probability density function.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x\)</span> fixed: the function is a likelihood function.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The likelihood is <strong>NOT</strong> the probability of <span class="math notranslate nohighlight">\(\theta\)</span> being the real one (truth), given the realization <span class="math notranslate nohighlight">\(X=x\)</span>. The likelihood is the probability that a particular outcome <span class="math notranslate nohighlight">\(x\)</span> is observed when the true value of the parameter of our model is <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
+</div>
+<h3 class="rubric" id="marginalization">Marginalization</h3>
+<hr class="docutils" />
+<h2 class="rubric" id="tbf">TBF</h2>
+<h2 class="rubric" id="bayesian-inference">Bayesian Inference</h2>
+<p><strong>What’s the goal?</strong> We want to make predictions when we only have partial information.</p>
+<h3 class="rubric" id="definitions">Definitions</h3>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> → a single data point from a random variable <span class="math notranslate nohighlight">\(X\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span> → the parameter of the data distribution, i.e. <span class="math notranslate nohighlight">\(x \sim p(x \mid \theta)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha\)</span> → a hyperparameter of the parameter distribution, i.e. <span class="math notranslate nohighlight">\(\theta \sim p(\theta \mid \alpha)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> → the dataset, a collection of <span class="math notranslate nohighlight">\(n\)</span> observed data points.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{x}\)</span> → a new, unseen data point we want to predict.</p></li>
+</ul>
+<h3 class="rubric" id="bayesian-inference-step-1-the-posterior">Bayesian Inference Step 1: The Posterior</h3>
+<p>The central object we want is the posterior distribution of the parameters
+$<span class="math notranslate nohighlight">\(
+p(\theta\mid\mathbf{X},\alpha).
+\)</span>$</p>
+<p>Using Bayes’ rule, we get
+$<span class="math notranslate nohighlight">\(
+\begin{aligned}
+p(\theta\mid\mathbf{X},\alpha) &amp;= \dfrac{p(\theta,\mathbf{X},\alpha)}{p(\mathbf{X},\alpha)}, \\
+&amp;= \dfrac{p(\mathbf{X}\mid \theta,\alpha)p(\theta,\alpha)}{p(\mathbf{X}\mid\alpha)p(\alpha)}, \\
+&amp;= \dfrac{p(\mathbf{X}\mid\theta,\alpha)p(\theta\mid\alpha)\cancel{p(\alpha)}}{p(\mathbf{X}\mid\alpha)\cancel{p(\alpha)}}, \\
+&amp;= \dfrac{p(\mathbf{X}\mid\theta,\alpha)p(\theta\mid\alpha)}{p(\mathbf{X}\mid\alpha)}.
+\end{aligned}
+\)</span>$</p>
+<p>Here:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(p(\theta\mid\alpha)\)</span> → the prior distribution of the parameters, i.e., what we believed about the parameters before seeing the data.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p(\mathbf{X}\mid\theta,\alpha)\)</span> → the likelihood, i.e., how well a parameter value explains the observed data.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p(\mathbf{X}\mid\alpha)\)</span> → the marginal distribution, i.e., the distribution of the observed data marginalized over the parameters.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p(\theta\mid\mathbf{X},\alpha)\)</span> → is the posterior distribution, i.e., our updated belief about the parameters after seeing the data.</p></li>
+</ul>
+<p>This is the heart of Bayesian inference: <strong>prior + data → posterior</strong>.</p>
+<p><strong>In practice</strong>: for most realistic models in machine learning, this posterior is intractable (we can’t write it down in closed form). That’s why we need <strong>approximation methods</strong> (MCMC, Variational Inference, etc.).</p>
+<h3 class="rubric" id="bayesian-inference-step-2-predictions">Bayesian Inference Step 2: Predictions</h3>
+<p>The posterior alone only tells us about parameters. What we usually want is to predict new data.</p>
+<div class="math notranslate nohighlight">
+\[
+p(\tilde x\mid\mathbf{X},\alpha) = \int p(\tilde x, \mid \theta) p(\theta \mid \mathbf{X},\alpha)\; d\theta.
+\]</div>
+<p>Here’s what’s happening:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(p(\tilde{x} \mid \theta)\)</span> → how likely a new point is, given a fixed parameter.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p(\theta \mid \mathbf{X}, \alpha)\)</span> → our uncertainty about which parameter is correct.</p></li>
+<li><p>The integral is just the expectation of <span class="math notranslate nohighlight">\(p(\tilde{x} \mid \theta)\)</span> under the posterior distribution of <span class="math notranslate nohighlight">\(\theta\)</span>.</p></li>
+</ul>
+<p>Formally,</p>
+<div class="math notranslate nohighlight">
+\[
+p(\tilde{x} \mid \mathbf{X}, \alpha) = \mathbb{E}_{\theta \sim p(\theta \mid \mathbf{X}, \alpha)}\big[p(\tilde{x} \mid \theta)\big].
+\]</div>
+<p>So the posterior predictive distribution says:</p>
+<blockquote>
+<div><p><em>To predict new data, average the predictions of every possible parameter, weighted by how plausible that parameter is given the data.</em></p>
+</div></blockquote>
+<p>So instead of returning a single prediction, Bayesian inference gives a distribution of possible outcomes, capturing both:</p>
+<ul class="simple">
+<li><p>Randomness in the data.</p></li>
+<li><p>Uncertainty in the parameters.</p></li>
+</ul>
+<p>This is why Bayesian inference is powerful, it doesn’t just say “here’s my best guess”, it says “here’s what I think could happen, and how confident I am.”</p>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs/machine_learning/probabilistic_ml"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Mattia Mantovani
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

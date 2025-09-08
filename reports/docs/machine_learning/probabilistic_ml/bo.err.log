@@ -23,14 +23,25 @@ Traceback (most recent call last):
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
 import numpy as np
+import matplotlib.pyplot as plt
 
-t = np.
+t = np.arange(0, 10, 0.1)
+f = np.sin(0.5 * t) + np.cos(2 * t)
+
+plt.plot(t, f)
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+plt.title('Noisy Sine Wave')
+plt.show()
 ------------------
 
 
-[0;36m  Cell [0;32mIn[1], line 3[0;36m[0m
-[0;31m    t = np.[0m
-[0m           ^[0m
-[0;31mSyntaxError[0m[0;31m:[0m invalid syntax
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn[1], line 1[0m
+[0;32m----> 1[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mnumpy[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mnp[39;00m
+[1;32m      2[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mplt[39;00m
+[1;32m      4[0m t [38;5;241m=[39m np[38;5;241m.[39marange([38;5;241m0[39m, [38;5;241m10[39m, [38;5;241m0.1[39m)
 
+[0;31mModuleNotFoundError[0m: No module named 'numpy'
 

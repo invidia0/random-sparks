@@ -57,11 +57,13 @@
     <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'docs/machine_learning/probabilistic_ml/bo';</script>
     <link rel="icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="prev" title="Probabilistic Machine Learning" href="../probabilistic_ml_overview.html" />
+    <link rel="prev" title="Probability - Basic concepts" href="basics.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -189,6 +191,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Machine Learning</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../probabilistic_ml_overview.html">Probabilistic Machine Learning</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Probability - Basic concepts</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Bayesian Optimization</a></li>
 </ul>
 </details></li>
@@ -332,7 +335,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -348,6 +353,26 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definition">Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-optimization-workflow">Bayesian Optimization Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization">1. Initialization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#surrogate-model">2. Surrogate model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acquisition-function">3. Acquisition function</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-improvement-ei">Expected Improvement (EI)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">Upper Confidence Bound (UCB)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#objective-function">4. Objective function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iteration-and-termination">5. Iteration and termination</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -368,23 +393,170 @@ document.write(`
 <li><p>Efficient for hyperparameter tuning, experimental design, etc.</p></li>
 </ul>
 </div>
+<section id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Link to this heading">#</a></h2>
+<p>Bayesian Optimization is a strategy for optimizing expensive-to-evaluate functions. An example could be a Deep Neural Network</p>
+<p>Consider the following scenario. We have to train a deep neural network for image classification. Our network’s performance depends on different hyperparameters:</p>
+<ul class="simple">
+<li><p>Learning rate (<span class="math notranslate nohighlight">\(\eta\)</span>)</p></li>
+<li><p>Batch size (B)</p></li>
+<li><p>No. of hidden layers (L)</p></li>
+<li><p>Dropout probability (p)</p></li>
+<li><p>Weight decay (<span class="math notranslate nohighlight">\(\lambda\)</span>)</p></li>
+</ul>
+<p>The problem is that each training run takes <strong>hours</strong> and the relationship between hyperparameters and accuracy is <strong>nonlinear and unknown</strong>. Is there a solution? Yes, Bayesian Optimization.</p>
+<p>Bayesian Optimization treats the model performance (validation accuracy or loss) as a black-box function</p>
+<div class="math notranslate nohighlight">
+\[
+f(\eta, B, L, p, \lambda) = \text{Validation}.
+\]</div>
+<p>Since evaluating <span class="math notranslate nohighlight">\(f\)</span> is expensive, BO builds a surrogate model (often a Gaussian Process) to capture the relationship between hyperaprameters and accuracy.</p>
+</section>
+<section id="bayesian-optimization-workflow">
+<h2>Bayesian Optimization Workflow<a class="headerlink" href="#bayesian-optimization-workflow" title="Link to this heading">#</a></h2>
+<p>Bayesian optimization effectively combines statistical modeling and decision-making strategies to optimize complex, costly functions.</p>
+<section id="initialization">
+<h3>1. Initialization<a class="headerlink" href="#initialization" title="Link to this heading">#</a></h3>
+<p>First we need to define the <strong>search space</strong> or the <strong>span</strong> of our hyperparameters. For instance:</p>
+<ul class="simple">
+<li><p>Learning rate: <span class="math notranslate nohighlight">\([10^{-5}, 10^{-1}]\)</span></p></li>
+<li><p>Batch size: <span class="math notranslate nohighlight">\([32, 512]\)</span></p></li>
+<li><p>Layers: <span class="math notranslate nohighlight">\([2, 6]\)</span></p></li>
+<li><p>Dropout: <span class="math notranslate nohighlight">\([0.0, 0.5]\)</span></p></li>
+<li><p>Weight decay: <span class="math notranslate nohighlight">\([10^{-6}, 10^{-2}]\)</span>
+Then we select a few initial points by sampling function <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
+</ul>
+</section>
+<section id="surrogate-model">
+<h3>2. Surrogate model<a class="headerlink" href="#surrogate-model" title="Link to this heading">#</a></h3>
+<p>A <strong>Gaussian Process (GP)</strong> is typically used as the surrogate model. The GP is a powerful tool for <strong>non-linear</strong> and <strong>non-parametric</strong> estimation given its ability to provide both a mean <span class="math notranslate nohighlight">\(m(x)\)</span> and an uncertainty measure <span class="math notranslate nohighlight">\(k(x, x')\)</span> at any point in the input space. The GP models the function as:</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) \sim \mathcal{GP}(m(x), k(x,x')).
+\]</div>
+<p>Here:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(m(x)\)</span> is often assumed to be zero if no prior is known.</p></li>
+<li><p><span class="math notranslate nohighlight">\(k(x,x')\)</span> is the so-called <em>kernel</em> function and defined the covariance between any two points in the input space. There are many kernel functions available, a good reference is <a class="reference external" href="https://www.cs.toronto.edu/~duvenaud/cookbook/">The Kernel Cookbook</a>.</p></li>
+</ul>
+</section>
+<section id="acquisition-function">
+<h3>3. Acquisition function<a class="headerlink" href="#acquisition-function" title="Link to this heading">#</a></h3>
+<p>The next point to sample is chosen by maximizing an <strong>acquisition function</strong>, which balances <strong>exploration</strong> (trying regions where the model is uncertain) and <strong>exploitation</strong> (focusing on regions likely to yield improvements).</p>
+<p>Intuitively, sticking close to already sampled points might reveal a better set of hyperparameters — but it might also miss the true optimum. Exploration ensures we also investigate uncertain areas, where the surrogate model suggests there could be undiscovered improvements.</p>
+<p>Since any optimization problem can be expressed as either maximization or minimization (by flipping the sign of the objective), let us assume we want to maximize <span class="math notranslate nohighlight">\(f(x)\)</span>. Then, we can defined the <strong>improvement</strong> <span class="math notranslate nohighlight">\(I(x)\)</span> at a point <span class="math notranslate nohighlight">\(x\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+I(x) = \text{max}(f(x)-f(x^*), 0),
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x^*)\)</span> is the best solution we have so far. From this definition we can describe common acquisition functions.</p>
+<section id="expected-improvement-ei">
+<h4>Expected Improvement (EI)<a class="headerlink" href="#expected-improvement-ei" title="Link to this heading">#</a></h4>
+<p>The <strong>expected improvement</strong> is described as the expected value of <span class="math notranslate nohighlight">\(I(x)\)</span> and is another random variable defined over the GP</p>
+<div class="math notranslate nohighlight">
+\[
+\text{EI}(x) = \mathbb{E}[I(x)] = \int_{-\infty}^{\infty} I(x)\varphi(z)dz,
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\varphi(z)\)</span> is the probability density function of the standard distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span>. In practice, EI simplifies to a closed-form expression involving the surrogate’s predictive mean <span class="math notranslate nohighlight">\(\mu\)</span> and standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+\left(\mu- f(x^\star)\right) \Phi\left(\frac{\mu-f(x^\star)}{\sigma}\right) + \sigma \varphi\left(\frac{\mu - f(x^\star)}{\sigma}\right).
+\]</div>
+<div class="tip dropdown admonition">
+<p class="admonition-title"><strong>Derivation</strong></p>
+<p>We have</p>
+<div class="math notranslate nohighlight">
+\[
+\text{EI}(x) = \int_{-\infty}^{\infty} I(x)\varphi(z) \mathop{\mathrm{d}z}=\int_{-\infty}^{\infty}\underbrace{\max(f(x) - f(x^\star), 0)}_{I(x)}\varphi(z)\mathop{\mathrm{d}z}.
+\]</div>
+<p>How to compute “max” in the integral?
+We want to find a switch point <span class="math notranslate nohighlight">\(z_0\)</span> where the integral is splitted in two when <span class="math notranslate nohighlight">\(f(x) - f(x^*) \ge 0\)</span> and the other <span class="math notranslate nohighlight">\(f(x) - f(x^*) \le 0\)</span>. That is</p>
+<div class="math notranslate nohighlight">
+\[
+\text{if} \quad f(x)=f(x^*) \Rightarrow \mu + \sigma z = f(x^*) \Rightarrow z_0 = \dfrac{f(x^*) - \mu}{\sigma}.
+\]</div>
+<p>So we can rewrite</p>
+<div class="math notranslate nohighlight">
+\[
+\text{EI}(x) = \underbrace{\int_{-\infty}^{z_0} I(x)\varphi(z) \mathop{\mathrm{d}z}}_{\text{Zero since }I(x)=0} + \int_{z_0}^{\infty} I(x)\varphi(z) \mathop{\mathrm{d}z}.
+\]</div>
+<p>Since we know that <span class="math notranslate nohighlight">\(f(x)=\mu+\sigma z\)</span> and that <span class="math notranslate nohighlight">\(f(x)-f(x^*) \le 0\)</span> only in <span class="math notranslate nohighlight">\((-\infty, z_0)\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\text{EI}(x)
+&amp;=\int_{z_0}^{\infty} \max(f(x)-f(x^\star),0) \varphi(z)\mathop{\mathrm{d}z} =
+\int_{z_0}^{\infty} \left(\mu+\sigma z - f(x^\star)\right)\varphi(z) \mathop{\mathrm{d}z}\\
+&amp;= \int_{z_0}^{\infty} \left(\mu - f(x^\star) \right)\varphi(z)\mathop{\mathrm{d}z} +
+\int_{z_0}^{\infty} \sigma z \frac{1}{\sqrt{2\pi}}e^{-z^2/2}\mathop{\mathrm{d}z} \\\\
+&amp;=\left(\mu- f(x^\star)\right) \underbrace{\int_{z_0}^{\infty}\varphi(z)\mathop{\mathrm{d}z}}_{1-\Phi(z_0)\equiv 1-\text{CDF}(z_0)} + \frac{\sigma}{\sqrt{2\pi}}\int_{z_0}^{\infty}  z e^{-z^2/2}\mathop{\mathrm{d}z}\\
+&amp;=\left(\mu- f(x^\star)\right) (1-\Phi(z_0)) - \frac{\sigma}{\sqrt{2\pi}}\int_{z_0}^{\infty}  \left(e^{-z^2/2}\right)' \mathop{\mathrm{d}z}\\
+&amp;=\left(\mu- f(x^\star)\right) (1-\Phi(z_0)) - \frac{\sigma}{\sqrt{2\pi}} \left[e^{-z^2/2}\right]_{z_0}^{\infty}\\
+&amp;=\left(\mu- f(x^\star)\right) \underbrace{(1-\Phi(z_0))}_{\Phi(-z_0)} + \sigma \varphi(z_0) \\
+&amp;=\left(\mu- f(x^\star)\right) \Phi\left(\frac{\mu-f(x^\star)}{\sigma}\right) + \sigma \varphi\left(\frac{\mu - f(x^\star)}{\sigma}\right)
+\end{aligned}
+\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In probability, a Cumulative Distribution Function (CDF) is a function that gives the probability that a random variable will take a value less than or equal to a specific value.</p>
+</div>
+<p>This function takes high values when <span class="math notranslate nohighlight">\(\mu \ge f(x^*)\)</span> or when there is a lot of uncertainty, when <span class="math notranslate nohighlight">\(\sigma \ge 1\)</span>. If we have a precise observation then <span class="math notranslate nohighlight">\(\sigma = 0\)</span> and it holds that <span class="math notranslate nohighlight">\(\text{EI}(x) = 0\)</span>.</p>
+<p>Source: <a class="reference external" href="https://ekamperi.github.io/machine%20learning/2021/06/11/acquisition-functions.html">Acquisition functions in Bayesian Optimization</a>.</p>
+</div>
+</section>
+<section id="upper-confidence-bound-ucb">
+<h4>Upper Confidence Bound (UCB)<a class="headerlink" href="#upper-confidence-bound-ucb" title="Link to this heading">#</a></h4>
+<p>The <strong>Upper Confidence Bound</strong> acquisition function has a simple form. At a candidate point <span class="math notranslate nohighlight">\(x\)</span> it is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{UCB}(x) = \mu(x) + k\sigma(x),
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu(x)\)</span> and <span class="math notranslate nohighlight">\(\sigma(x)\)</span> are the mean and standard deviation of the GP’s prediction at point <span class="math notranslate nohighlight">\(x\)</span>, while <span class="math notranslate nohighlight">\(k\)</span> is a parameter that control the trade-off:</p>
+<ul class="simple">
+<li><p>Larger <span class="math notranslate nohighlight">\(k\)</span> values emphasize exploration, encouraging sampling in regions with high uncertainty.</p></li>
+<li><p>Smaller <span class="math notranslate nohighlight">\(k\)</span> values emphasize exploitation, focusing on regions where the surrogate predicts high performance.</p></li>
+</ul>
+</section>
+</section>
+<section id="objective-function">
+<h3>4. Objective function<a class="headerlink" href="#objective-function" title="Link to this heading">#</a></h3>
+<p>The next best-point candidate <span class="math notranslate nohighlight">\(x\)</span> is evaluated to obtain <span class="math notranslate nohighlight">\(f(x)\)</span>. This new observation is added to the dataset, used to update the GP model.</p>
+</section>
+<section id="iteration-and-termination">
+<h3>5. Iteration and termination<a class="headerlink" href="#iteration-and-termination" title="Link to this heading">#</a></h3>
+<p>The steps of updating the acquisition function, selecting new points, and updating the surrogate model are repeated. The optimization process continues until a predefined stopping criterion is met, such as reaching a maximum number of function evaluations or achieving a convergence threshold where the improvements become minimal.</p>
+<p>Bayesian optimization is a tool to efficiently navigate complex functions landscapes, minimizing the number of evaluations needed to locate the optimum by intelligently balancing exploration of unknown regions and exploitation of promising areas.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Noisy Sine Wave&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span>
-           <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;numpy&#39;
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -418,12 +590,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../probabilistic_ml_overview.html"
+       href="basics.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Probabilistic Machine Learning</p>
+        <p class="prev-next-title">Probability - Basic concepts</p>
       </div>
     </a>
 </div>
@@ -432,6 +604,33 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definition">Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-optimization-workflow">Bayesian Optimization Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization">1. Initialization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#surrogate-model">2. Surrogate model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acquisition-function">3. Acquisition function</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-improvement-ei">Expected Improvement (EI)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">Upper Confidence Bound (UCB)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#objective-function">4. Objective function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iteration-and-termination">5. Iteration and termination</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
