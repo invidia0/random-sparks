@@ -265,7 +265,7 @@
       
       
       
-      <li><a href="../../../_sources/docs/machine_learning/probabilistic_ml/basics.ipynb" target="_blank"
+      <li><a href="../../../_sources/docs/machine_learning/probabilistic_ml/basics.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -275,7 +275,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.ipynb</span>
+<span class="btn__text-container">.md</span>
 </a>
 </li>
       
@@ -336,7 +336,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -352,6 +354,31 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-of-probability">Concepts of Probability</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#independent-and-identically-distributed-iid">Independent and identically distributed (IID)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prior-probability">Prior probability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-probability">Posterior probability</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes-rule">Bayes’ Rule</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood-function">Likelihood function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#marginalization">Marginalization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tbf">TBF</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference">Bayesian Inference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference-step-1-the-posterior">Bayesian Inference Step 1: The Posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference-step-2-predictions">Bayesian Inference Step 2: Predictions</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -363,27 +390,20 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="probability-basic-concepts">
 <h1>Probability - Basic concepts<a class="headerlink" href="#probability-basic-concepts" title="Link to this heading">#</a></h1>
-<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
-<div class="sd-row sd-g-1 sd-g-xs-1 sd-g-sm-1 sd-g-md-1 sd-g-lg-1 docutils">
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<strong>What is Probability?</strong></div>
-<p class="sd-card-text">Given some <strong>events</strong>, probability describes them numerically and how likely they are to occur.</p>
-</div>
-</div>
-</div>
-<p>In this spark, we will go through the basics of probability theory concepts. After crusing my head on this topic for a while, I found that everyone is basically giving its own fancy version/notation about everything in this field. In the following I’ll try to give you a simple, intuitive and real-world applications-grounded formulation of these concepts from a humble PhD student perspective. A lot of the concepts are drawn from online materials and university courses (<a class="reference external" href="https://ermongroup.github.io/cs228-notes/preliminaries/probabilityreview/">like this one</a>)</p>
-<h2 class="rubric" id="concepts-of-probability">Concepts of Probability</h2>
+<p>In this spark, we will go through the basics of probability theory concepts. After crusing my head on this topic for a while, I found that everyone is basically giving its own fancy version/notation about everything in this field. In the following I’ll try to give you a simple, intuitive and real-world applications-grounded formulation of these concepts from a humble PhD student perspective. A lot of the concepts are drawn from online materials and university courses (<a class="reference external" href="https://ermongroup.github.io/cs228-notes/preliminaries/probabilityreview/">like this one</a>).</p>
+<section id="concepts-of-probability">
+<h2>Concepts of Probability<a class="headerlink" href="#concepts-of-probability" title="Link to this heading">#</a></h2>
 <p>Throughout this chapter we will consider a <strong>parametric formulation</strong> of probability concepts.</p>
-<h3 class="rubric" id="independent-and-identically-distributed-iid">Independent and identically distributed (IID)</h3>
+<section id="independent-and-identically-distributed-iid">
+<h3>Independent and identically distributed (IID)<a class="headerlink" href="#independent-and-identically-distributed-iid" title="Link to this heading">#</a></h3>
 <p>A collection of random variables is IID if each random variable has the same probability distribution as the others and all are mutually independent. It’s almost the same as saying “random sampling”.</p>
 <ul class="simple">
 <li><p><strong>Identically distributed</strong> → this means that in the data there are no trends.</p></li>
 <li><p><strong>Independent</strong> → this means that the sample items are all independent and they are not connected to each other in any way.</p></li>
 </ul>
-<h3 class="rubric" id="prior-probability">Prior probability</h3>
+</section>
+<section id="prior-probability">
+<h3>Prior probability<a class="headerlink" href="#prior-probability" title="Link to this heading">#</a></h3>
 <p>A <strong>prior probability distribution</strong> of an uncertain quantity, simply called the <strong>prior</strong>, is the probability distribution of our model’s parameters before some evidence is taken into account.</p>
 <p>This can be the prior belies that we have about our parameters. Usually, we have some ways-to-go as prior distributions:</p>
 <ul class="simple">
@@ -393,7 +413,9 @@ document.write(`
 <li><p><strong>Bernoulli</strong></p></li>
 </ul>
 <p>In general the design of a prior distribution is very case-dependent. Sometimes you can hear about “uninformative”, flat, or diffuse priors expressing vague or general information about a random variable.</p>
-<h3 class="rubric" id="posterior-probability">Posterior probability</h3>
+</section>
+<section id="posterior-probability">
+<h3>Posterior probability<a class="headerlink" href="#posterior-probability" title="Link to this heading">#</a></h3>
 <p>In probability theory, the <strong>posterior probability</strong> is a type of <strong>conditional probability</strong> i.e., the probability of an event occurring given that another has occurred. The official formulation is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -402,7 +424,8 @@ P(A|B)=\dfrac{P(A\cap B)}{P(B)},
 <p>where <span class="math notranslate nohighlight">\(P(A \cap B)\)</span> is the probability of <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> happening at the same time. This quantity is usually unknown. <span class="math notranslate nohighlight">\(P(B)\)</span> is called the marginal distribution.</p>
 <p>In practice, the marginal is almost always intractable to compute in closed form. Typically, what we have instead is a joint distribution <span class="math notranslate nohighlight">\(p(x,y)\)</span>, describing the probability of pairs <span class="math notranslate nohighlight">\((x,y) \in X \times Y\)</span> falling within certain ranges or discrete values. To obtain the marginal distribution of a variable <span class="math notranslate nohighlight">\(X\)</span>, we remove the influence of the other variable <span class="math notranslate nohighlight">\(Y\)</span>—a process known as marginalization.</p>
 <p>But we are still missing information about <span class="math notranslate nohighlight">\(P(A \cap B)\)</span>. At this point, it’s fair to say that in most cases we deal with limited information. The main theorem that allows us to update our knowledge under such conditions is Bayes’ theorem, which is the foundation of Bayesian inference. This will be very useful in the upcoming section on <a class="reference internal" href="#bayesian-inference"><span class="xref myst">Bayesian Inference</span></a>.</p>
-<h4 class="rubric" id="bayes-rule">Bayes’ Rule</h4>
+<section id="bayes-rule">
+<h4>Bayes’ Rule<a class="headerlink" href="#bayes-rule" title="Link to this heading">#</a></h4>
 <p>For events A and B, the Bayes’ theorem says</p>
 <div class="math notranslate nohighlight">
 \[
@@ -417,7 +440,10 @@ P(A|B) = \dfrac{P(B|A)P(A)}{P(B)},
 <li></li>
 </ul>
 <p>This theorem has countless applications and underpins many probabilistic methods. For our purposes, we will revisit it intuitively in its parametric form in <a class="reference internal" href="#bayesian-inference"><span class="xref myst">Bayesian Inference</span></a>.</p>
-<h3 class="rubric" id="likelihood-function">Likelihood function</h3>
+</section>
+</section>
+<section id="likelihood-function">
+<h3>Likelihood function<a class="headerlink" href="#likelihood-function" title="Link to this heading">#</a></h3>
 <p><strong>Likelihood</strong> measures how well a statistical model explains observed data by calculating the probability of seeing that data under different parameter values of the model.</p>
 <ul class="simple">
 <li><p><strong>High likelihood</strong> → the parameters make the observed data very plausible.</p></li>
@@ -465,12 +491,20 @@ x \mapsto f(x | \theta),
 <p class="admonition-title">Warning</p>
 <p>The likelihood is <strong>NOT</strong> the probability of <span class="math notranslate nohighlight">\(\theta\)</span> being the real one (truth), given the realization <span class="math notranslate nohighlight">\(X=x\)</span>. The likelihood is the probability that a particular outcome <span class="math notranslate nohighlight">\(x\)</span> is observed when the true value of the parameter of our model is <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
 </div>
-<h3 class="rubric" id="marginalization">Marginalization</h3>
+</section>
+<section id="marginalization">
+<h3>Marginalization<a class="headerlink" href="#marginalization" title="Link to this heading">#</a></h3>
+</section>
+</section>
 <hr class="docutils" />
-<h2 class="rubric" id="tbf">TBF</h2>
-<h2 class="rubric" id="bayesian-inference">Bayesian Inference</h2>
+<section id="tbf">
+<h2>TBF<a class="headerlink" href="#tbf" title="Link to this heading">#</a></h2>
+</section>
+<section id="bayesian-inference">
+<h2>Bayesian Inference<a class="headerlink" href="#bayesian-inference" title="Link to this heading">#</a></h2>
 <p><strong>What’s the goal?</strong> We want to make predictions when we only have partial information.</p>
-<h3 class="rubric" id="definitions">Definitions</h3>
+<section id="definitions">
+<h3>Definitions<a class="headerlink" href="#definitions" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(x\)</span> → a single data point from a random variable <span class="math notranslate nohighlight">\(X\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\theta\)</span> → the parameter of the data distribution, i.e. <span class="math notranslate nohighlight">\(x \sim p(x \mid \theta)\)</span>.</p></li>
@@ -478,7 +512,9 @@ x \mapsto f(x | \theta),
 <li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> → the dataset, a collection of <span class="math notranslate nohighlight">\(n\)</span> observed data points.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\tilde{x}\)</span> → a new, unseen data point we want to predict.</p></li>
 </ul>
-<h3 class="rubric" id="bayesian-inference-step-1-the-posterior">Bayesian Inference Step 1: The Posterior</h3>
+</section>
+<section id="bayesian-inference-step-1-the-posterior">
+<h3>Bayesian Inference Step 1: The Posterior<a class="headerlink" href="#bayesian-inference-step-1-the-posterior" title="Link to this heading">#</a></h3>
 <p>The central object we want is the posterior distribution of the parameters
 $<span class="math notranslate nohighlight">\(
 p(\theta\mid\mathbf{X},\alpha).
@@ -501,7 +537,9 @@ p(\theta\mid\mathbf{X},\alpha) &amp;= \dfrac{p(\theta,\mathbf{X},\alpha)}{p(\mat
 </ul>
 <p>This is the heart of Bayesian inference: <strong>prior + data → posterior</strong>.</p>
 <p><strong>In practice</strong>: for most realistic models in machine learning, this posterior is intractable (we can’t write it down in closed form). That’s why we need <strong>approximation methods</strong> (MCMC, Variational Inference, etc.).</p>
-<h3 class="rubric" id="bayesian-inference-step-2-predictions">Bayesian Inference Step 2: Predictions</h3>
+</section>
+<section id="bayesian-inference-step-2-predictions">
+<h3>Bayesian Inference Step 2: Predictions<a class="headerlink" href="#bayesian-inference-step-2-predictions" title="Link to this heading">#</a></h3>
 <p>The posterior alone only tells us about parameters. What we usually want is to predict new data.</p>
 <div class="math notranslate nohighlight">
 \[
@@ -528,8 +566,8 @@ p(\tilde{x} \mid \mathbf{X}, \alpha) = \mathbb{E}_{\theta \sim p(\theta \mid \ma
 <li><p>Uncertainty in the parameters.</p></li>
 </ul>
 <p>This is why Bayesian inference is powerful, it doesn’t just say “here’s my best guess”, it says “here’s what I think could happen, and how confident I am.”</p>
-</div>
-</div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -586,6 +624,38 @@ p(\tilde{x} \mid \mathbf{X}, \alpha) = \mathbb{E}_{\theta \sim p(\theta \mid \ma
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-of-probability">Concepts of Probability</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#independent-and-identically-distributed-iid">Independent and identically distributed (IID)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prior-probability">Prior probability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-probability">Posterior probability</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes-rule">Bayes’ Rule</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#likelihood-function">Likelihood function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#marginalization">Marginalization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tbf">TBF</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference">Bayesian Inference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference-step-1-the-posterior">Bayesian Inference Step 1: The Posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inference-step-2-predictions">Bayesian Inference Step 2: Predictions</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

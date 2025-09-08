@@ -1,13 +1,6 @@
 # Probability - Basic concepts
 
-::::{grid}
-:gutter: 1
-
-:::{grid-item-card} **What is Probability?**
-Given some **events**, probability describes them numerically and how likely they are to occur.
-:::
-
-In this spark, we will go through the basics of probability theory concepts. After crusing my head on this topic for a while, I found that everyone is basically giving its own fancy version/notation about everything in this field. In the following I'll try to give you a simple, intuitive and real-world applications-grounded formulation of these concepts from a humble PhD student perspective. A lot of the concepts are drawn from online materials and university courses ([like this one](https://ermongroup.github.io/cs228-notes/preliminaries/probabilityreview/))
+In this spark, we will go through the basics of probability theory concepts. After crusing my head on this topic for a while, I found that everyone is basically giving its own fancy version/notation about everything in this field. In the following I'll try to give you a simple, intuitive and real-world applications-grounded formulation of these concepts from a humble PhD student perspective. A lot of the concepts are drawn from online materials and university courses ([like this one](https://ermongroup.github.io/cs228-notes/preliminaries/probabilityreview/)).
 
 ## Concepts of Probability
 Throughout this chapter we will consider a **parametric formulation** of probability concepts.
