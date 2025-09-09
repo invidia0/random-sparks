@@ -372,6 +372,15 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-called-variational-free-energy">Why is it called <em>variational free energy</em>?</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#elbo-cross-entropy-connection">ELBO – Cross-Entropy Connection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-from-the-kl-divergence">1. Start from the KL divergence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#introduce-cross-entropy">2. Introduce cross-entropy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expand-with-bayes-theorem">3. Expand with Bayes’ theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-elbo">4. Define the ELBO</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaway">Key Takeaway</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-neural-networks-use-cross-entropy-not-elbo">Why Neural Networks Use Cross-Entropy, Not ELBO</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -549,6 +558,84 @@ F = U - TS,
 </ul>
 <p>So the “free” part means: <em>we don’t have to pay for the entropy, it reduces the effective cost of explaining the data</em>.</p>
 </div>
+</section>
+</section>
+<section id="elbo-cross-entropy-connection">
+<h2>ELBO – Cross-Entropy Connection<a class="headerlink" href="#elbo-cross-entropy-connection" title="Link to this heading">#</a></h2>
+<p>Let’s make explicit how the <strong>cross-entropy</strong> and the <strong>Evidence Lower Bound (ELBO)</strong> both arise from the <strong>KL divergence</strong>.</p>
+<section id="start-from-the-kl-divergence">
+<h3>1. Start from the KL divergence<a class="headerlink" href="#start-from-the-kl-divergence" title="Link to this heading">#</a></h3>
+<p>For an approximate posterior <span class="math notranslate nohighlight">\(q(\theta)\)</span> and the true posterior <span class="math notranslate nohighlight">\(p(\theta\mid\mathcal{D})\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{KL}}(q(\theta)\,\|\,p(\theta\mid\mathcal{D})) 
+= \mathbb{E}_{q(\theta)}\big[\log q(\theta) - \log p(\theta\mid\mathcal{D})\big].
+\]</div>
+</section>
+<section id="introduce-cross-entropy">
+<h3>2. Introduce cross-entropy<a class="headerlink" href="#introduce-cross-entropy" title="Link to this heading">#</a></h3>
+<p>By definition, the cross-entropy between <span class="math notranslate nohighlight">\(q\)</span> and <span class="math notranslate nohighlight">\(p(\theta\mid\mathcal{D})\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+H(q, p(\theta\mid\mathcal{D})) = - \mathbb{E}_{q(\theta)}\big[\log p(\theta\mid\mathcal{D})\big].
+\]</div>
+<p>Thus</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{KL}}(q \,\|\, p) = H(q, p(\theta\mid\mathcal{D})) - H(q),
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(H(q) = -\mathbb{E}_q[\log q]\)</span> is the entropy of <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<p><strong>KL = cross-entropy – entropy.</strong></p>
+</section>
+<section id="expand-with-bayes-theorem">
+<h3>3. Expand with Bayes’ theorem<a class="headerlink" href="#expand-with-bayes-theorem" title="Link to this heading">#</a></h3>
+<p>Using</p>
+<div class="math notranslate nohighlight">
+\[
+\log p(\theta\mid\mathcal{D}) = \log p(\mathcal{D}\mid\theta) + \log p(\theta) - \log p(\mathcal{D}),
+\]</div>
+<p>the cross-entropy becomes</p>
+<div class="math notranslate nohighlight">
+\[
+H(q, p(\theta\mid\mathcal{D})) 
+= -\mathbb{E}_q[\log p(\mathcal{D}\mid\theta) + \log p(\theta)] + \log p(\mathcal{D}).
+\]</div>
+</section>
+<section id="define-the-elbo">
+<h3>4. Define the ELBO<a class="headerlink" href="#define-the-elbo" title="Link to this heading">#</a></h3>
+<p>The standard decomposition is</p>
+<div class="math notranslate nohighlight">
+\[
+\log p(\mathcal{D}) = \text{ELBO}(q) + D_{\mathrm{KL}}(q\,\|\,p(\theta\mid\mathcal{D})).
+\]</div>
+<p>Rearranging</p>
+<div class="math notranslate nohighlight">
+\[
+\text{ELBO}(q) = - H(q, p(\theta\mid\mathcal{D})) + H(q) + \log p(\mathcal{D}).
+\]</div>
+</section>
+<section id="key-takeaway">
+<h3>Key Takeaway<a class="headerlink" href="#key-takeaway" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Cross-Entropy</strong> pulls <span class="math notranslate nohighlight">\(q\)</span> toward the true posterior.</p></li>
+<li><p><strong>ELBO</strong> does the same, but also rewards <span class="math notranslate nohighlight">\(q\)</span> for having higher entropy.</p></li>
+<li><p><strong>KL divergence</strong> ties them together:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\boxed{D_{\mathrm{KL}}(q\|p) = H(q, p) - H(q)}, \quad
+\boxed{\text{ELBO} = -H(q,p) + H(q) + \log p(\mathcal{D})}.
+\]</div>
+</section>
+<section id="why-neural-networks-use-cross-entropy-not-elbo">
+<h3>Why Neural Networks Use Cross-Entropy, Not ELBO<a class="headerlink" href="#why-neural-networks-use-cross-entropy-not-elbo" title="Link to this heading">#</a></h3>
+<p>In standard deep learning, neural networks are trained by <strong>maximum likelihood estimation (MLE)</strong> rather than full Bayesian inference.</p>
+<ul class="simple">
+<li><p>We assume a <strong>point estimate</strong> of the parameters (weights) instead of a posterior distribution <span class="math notranslate nohighlight">\(p(\theta \mid \mathcal{D})\)</span>.</p></li>
+<li><p><strong>Thus, there is no approximate distribution <span class="math notranslate nohighlight">\(q(\theta)\)</span> to optimize, and no entropy term to keep track of.</strong></p></li>
+<li><p>The training objective reduces to minimizing the <strong>negative log-likelihood</strong> of the data, which in classification problems is exactly the <strong>cross-entropy loss</strong>.</p></li>
+</ul>
+<p>In contrast, when doing <strong>Bayesian deep learning</strong> (e.g. variational inference in Bayesian NNs, VAEs), the ELBO becomes the natural objective because it explicitly balances <strong>data fit (likelihood)</strong> with <strong>regularization (entropy and prior)</strong>.</p>
 <p>Summary:</p>
 <ul class="simple">
 <li><p><strong>Identity:</strong> <span class="math notranslate nohighlight">\(\log P(\mathbf{X}) = D_{\mathrm{KL}}(Q\|P) + \mathcal{L}(Q)\)</span>.</p></li>
@@ -629,6 +716,15 @@ F = U - TS,
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-mathcal-l-q-a-lower-bound">Why is <span class="math notranslate nohighlight">\(\mathcal{L}(Q)\)</span> a <em>lower bound</em>?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-useful-decomposition-of-the-elbo">Alternate, useful decomposition of the ELBO</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-called-variational-free-energy">Why is it called <em>variational free energy</em>?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#elbo-cross-entropy-connection">ELBO – Cross-Entropy Connection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-from-the-kl-divergence">1. Start from the KL divergence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#introduce-cross-entropy">2. Introduce cross-entropy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expand-with-bayes-theorem">3. Expand with Bayes’ theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-elbo">4. Define the ELBO</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaway">Key Takeaway</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-neural-networks-use-cross-entropy-not-elbo">Why Neural Networks Use Cross-Entropy, Not ELBO</a></li>
 </ul>
 </li>
 </ul>

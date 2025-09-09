@@ -252,6 +252,88 @@ It’s “free” in the same sense as in physics:
 So the “free” part means: *we don’t have to pay for the entropy, it reduces the effective cost of explaining the data*.
 :::
 
+## ELBO – Cross-Entropy Connection
+
+Let’s make explicit how the **cross-entropy** and the **Evidence Lower Bound (ELBO)** both arise from the **KL divergence**.
+
+### 1. Start from the KL divergence
+
+For an approximate posterior $q(\theta)$ and the true posterior $p(\theta\mid\mathcal{D})$
+
+$$
+D_{\mathrm{KL}}(q(\theta)\,\|\,p(\theta\mid\mathcal{D})) 
+= \mathbb{E}_{q(\theta)}\big[\log q(\theta) - \log p(\theta\mid\mathcal{D})\big].
+$$
+
+### 2. Introduce cross-entropy
+
+By definition, the cross-entropy between $q$ and $p(\theta\mid\mathcal{D})$ is
+
+$$
+H(q, p(\theta\mid\mathcal{D})) = - \mathbb{E}_{q(\theta)}\big[\log p(\theta\mid\mathcal{D})\big].
+$$
+
+Thus
+
+$$
+D_{\mathrm{KL}}(q \,\|\, p) = H(q, p(\theta\mid\mathcal{D})) - H(q),
+$$
+
+where $H(q) = -\mathbb{E}_q[\log q]$ is the entropy of $q$.
+
+**KL = cross-entropy – entropy.**
+
+### 3. Expand with Bayes’ theorem
+
+Using
+
+$$
+\log p(\theta\mid\mathcal{D}) = \log p(\mathcal{D}\mid\theta) + \log p(\theta) - \log p(\mathcal{D}),
+$$
+
+the cross-entropy becomes
+
+$$
+H(q, p(\theta\mid\mathcal{D})) 
+= -\mathbb{E}_q[\log p(\mathcal{D}\mid\theta) + \log p(\theta)] + \log p(\mathcal{D}).
+$$
+
+### 4. Define the ELBO
+
+The standard decomposition is
+
+$$
+\log p(\mathcal{D}) = \text{ELBO}(q) + D_{\mathrm{KL}}(q\,\|\,p(\theta\mid\mathcal{D})).
+$$
+
+Rearranging
+
+$$
+\text{ELBO}(q) = - H(q, p(\theta\mid\mathcal{D})) + H(q) + \log p(\mathcal{D}).
+$$
+
+
+### Key Takeaway
+
+* **Cross-Entropy** pulls $q$ toward the true posterior.
+* **ELBO** does the same, but also rewards $q$ for having higher entropy.
+* **KL divergence** ties them together:
+
+$$
+\boxed{D_{\mathrm{KL}}(q\|p) = H(q, p) - H(q)}, \quad
+\boxed{\text{ELBO} = -H(q,p) + H(q) + \log p(\mathcal{D})}.
+$$
+
+### Why Neural Networks Use Cross-Entropy, Not ELBO
+
+In standard deep learning, neural networks are trained by **maximum likelihood estimation (MLE)** rather than full Bayesian inference.
+
+* We assume a **point estimate** of the parameters (weights) instead of a posterior distribution $p(\theta \mid \mathcal{D})$.
+* **Thus, there is no approximate distribution $q(\theta)$ to optimize, and no entropy term to keep track of.**
+* The training objective reduces to minimizing the **negative log-likelihood** of the data, which in classification problems is exactly the **cross-entropy loss**.
+
+In contrast, when doing **Bayesian deep learning** (e.g. variational inference in Bayesian NNs, VAEs), the ELBO becomes the natural objective because it explicitly balances **data fit (likelihood)** with **regularization (entropy and prior)**.
+
 Summary:
 
 * **Identity:** $\log P(\mathbf{X}) = D_{\mathrm{KL}}(Q\|P) + \mathcal{L}(Q)$.
