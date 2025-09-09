@@ -258,5 +258,3 @@ Summary:
 * **Lower bound:** because $D_{\mathrm{KL}}(Q\|P)\ge0$, we always have $\mathcal{L}(Q)\le\log P(\mathbf{X})$.
 * **Optimization:** maximize $\mathcal{L}(Q)$ (ELBO) to make $Q$ as close as possible to the true posterior.
 * **Free energy:** $-\mathcal{L}(Q)$ equals expected “energy” minus entropy (so minimizing free energy balances fit and uncertainty).
-
-## MCMC vs VI
