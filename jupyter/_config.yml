@@ -34,3 +34,11 @@ html:
   # baseurl: https://invidia0.github.io/random-sparks/
   home_page_in_navbar: true
   favicon: "favicon.ico"
+
+# parse:
+#   myst_enable_extensions:
+#     - amsmath
+
+sphinx:
+  config:
+    mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

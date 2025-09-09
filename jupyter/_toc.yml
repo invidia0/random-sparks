@@ -12,4 +12,11 @@ parts:
     chapters:
     - file: docs/machine_learning/probabilistic_ml_overview
       sections:
+      - file: docs/machine_learning/probabilistic_ml/basics
       - file: docs/machine_learning/probabilistic_ml/bo
+      - file: docs/machine_learning/probabilistic_ml/var_inf
+      - file: docs/machine_learning/probabilistic_ml/mcmc
+
+  - caption: AI/Deep Learning
+    chapters:
+    - file: docs/deep_learning/bnn
