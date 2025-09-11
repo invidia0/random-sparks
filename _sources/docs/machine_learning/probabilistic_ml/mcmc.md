@@ -32,10 +32,11 @@ A **Markov chain** is a stochastic process describing a sequence of possible eve
 This is the same as saying that the future is independent of the past, given the present. Let's consider an example with a system of 4 states, 'Rain' or 'Car Wash' causing the 'Wet Ground' followed by the 'Slip'. Jumping from one state to the next state depends only on the current state not on the sequence of previous states which lead to this state.
 
 ```mermaid
-graph TD;
-    A(Rain) --> B(Wet Ground);
-    C(Car Wash) --> B;
-    B --> D(Slip);
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
 ```
 Mathematically, it is expressed as
 
