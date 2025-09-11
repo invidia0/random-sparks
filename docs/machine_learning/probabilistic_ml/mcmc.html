@@ -416,7 +416,7 @@ document.write(`
 <h2>Markov Chains<a class="headerlink" href="#markov-chains" title="Link to this heading">#</a></h2>
 <p>A <strong>Markov chain</strong> is a stochastic process describing a sequence of possible events in which the probability of each event depends only on the state attained in the previous event. This is called the <strong>Markov property</strong>.</p>
 <p>This is the same as saying that the future is independent of the past, given the present. Let’s consider an example with a system of 4 states, ‘Rain’ or ‘Car Wash’ causing the ‘Wet Ground’ followed by the ‘Slip’. Jumping from one state to the next state depends only on the current state not on the sequence of previous states which lead to this state.</p>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>  graph TD;
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>  flowchart TD;
       A--&gt;B;
       A--&gt;C;
       B--&gt;D;
