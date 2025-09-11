@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Markov Chain Monte Carlo &#8212; Random Sparks</title>
+    <title>Markov Chain Monte Carlo - Hands on &#8212; Random Sparks</title>
   
   
   
@@ -57,6 +57,8 @@
     <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'docs/machine_learning/probabilistic_ml/mcmc';</script>
     <link rel="icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -193,7 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Probability - Basic concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bo.html">Bayesian Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_inf.html">Variational Inference</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Markov Chain Monte Carlo</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Markov Chain Monte Carlo - Hands on</a></li>
 </ul>
 </details></li>
 </ul>
@@ -353,7 +355,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Markov Chain Monte Carlo</h1>
+    <h1>Markov Chain Monte Carlo - Hands on</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -363,8 +365,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chains">Markov Chains</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-estimate">Monte Carlo Estimate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-estimate">Monte Carlo Estimate</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-monte-carlo">Simple Monte Carlo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chains">Markov Chains</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo (MCMC)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hamiltonian-monte-carlo">Hamiltonian Monte Carlo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#langevin-dynamics">Langevin Dynamics</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mcmc-vs-vi">MCMC vs VI</a></li>
 </ul>
             </nav>
@@ -377,13 +387,80 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="markov-chain-monte-carlo">
-<h1>Markov Chain Monte Carlo<a class="headerlink" href="#markov-chain-monte-carlo" title="Link to this heading">#</a></h1>
-<section id="markov-chains">
-<h2>Markov Chains<a class="headerlink" href="#markov-chains" title="Link to this heading">#</a></h2>
-</section>
+  <section class="tex2jax_ignore mathjax_ignore" id="markov-chain-monte-carlo-hands-on">
+<h1>Markov Chain Monte Carlo - Hands on<a class="headerlink" href="#markov-chain-monte-carlo-hands-on" title="Link to this heading">#</a></h1>
+<p><strong>Markov chain Monte Carlo (MCMC)</strong> is a <strong>class</strong> of algorithms used to <strong>draw samples from a probability distribution</strong>. In statistics and Bayesian inference, usually we face the problem of evaluating some intractable integrals, like the marginal likelihood or the posterior predictive distribution.</p>
+<p>What we can do is leverage methods to <strong>approximate</strong> these integrals. MCMC is one of the most popular methods to do so.</p>
 <section id="monte-carlo-estimate">
 <h2>Monte Carlo Estimate<a class="headerlink" href="#monte-carlo-estimate" title="Link to this heading">#</a></h2>
+<p>Monte Carlo methods are a class of <strong>computational algorithms</strong> that rely on <strong>repeated random sampling</strong> to obtain numerical results. The basic idea is to use randomness to solve problems that might be deterministic in principle.</p>
+<p>Monte Carlo methods are mainly used in three problem classes: <strong>optimization</strong>, <strong>numerical integration</strong>, and <strong>generating draws from a probability distribution</strong>.</p>
+<section id="simple-monte-carlo">
+<h3>Simple Monte Carlo<a class="headerlink" href="#simple-monte-carlo" title="Link to this heading">#</a></h3>
+<p>Let’s suppose we want to compute the expected value of a population <span class="math notranslate nohighlight">\(\mu\)</span>, but the formula is intractable. We can use Monte Carlo methods to estimate it</p>
+<div class="math notranslate nohighlight">
+\[
+\mu = \mathbb{E}[X] = \int x p(x) dx \approx \frac{1}{N} \sum_{i=1}^{N} x_i.
+\]</div>
+<p>Where <span class="math notranslate nohighlight">\(x_i\)</span> are samples drawn from the distribution <span class="math notranslate nohighlight">\(p(x)\)</span>. Numerically, the algorithm is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">x_i</span> <span class="o">=</span> <span class="n">sample_from_distribution</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="n">x_i</span>
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">N</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="markov-chains">
+<h2>Markov Chains<a class="headerlink" href="#markov-chains" title="Link to this heading">#</a></h2>
+<p>A <strong>Markov chain</strong> is a stochastic process describing a sequence of possible events in which the probability of each event depends only on the state attained in the previous event. This is called the <strong>Markov property</strong>.</p>
+<p>This is the same as saying that the future is independent of the past, given the present. Let’s consider an example with a system of 4 states, ‘Rain’ or ‘Car Wash’ causing the ‘Wet Ground’ followed by the ‘Slip’. Jumping from one state to the next state depends only on the current state not on the sequence of previous states which lead to this state.</p>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph TD;
+    A(Rain) --&gt; B(Wet Ground);
+    C(Car Wash) --&gt; B;
+    B --&gt; D(Slip);
+</pre></div>
+</div>
+<p>Mathematically, it is expressed as</p>
+<div class="math notranslate nohighlight">
+\[
+P(X_{n+1} = n \mid X_n = k_n, X_{n-1}=k_{n-1}, \dots, X_1 = k_1) = P(X_{n+1} = k \mid X_n = k_n).
+\]</div>
+<section id="markov-chain-monte-carlo-mcmc">
+<h3>Markov Chain Monte Carlo (MCMC)<a class="headerlink" href="#markov-chain-monte-carlo-mcmc" title="Link to this heading">#</a></h3>
+<p>In Markov Chain Monte Carlo we construct leverage the Markov property. That is, starting from an initial state, we move to a new state guided by <strong>transition rules</strong> that depend only on the current state. The goal is to construct a Markov chain whose stationary distribution is the target distribution we want to sample from.
+The transition rules are designed to ensure that the Markov chain spends more time in regions of high probability under the target distribution.</p>
+<p>So let’s switch to an example where now we have to compute the posterior distribution of our NN parameters <span class="math notranslate nohighlight">\(p(\theta \mid D)\)</span> given the data <span class="math notranslate nohighlight">\(D\)</span>. The posterior is proportional to the likelihood times the prior</p>
+<div class="math notranslate nohighlight">
+\[
+p(\theta \mid D) \propto p(D \mid \theta) p(\theta).
+\]</div>
+<p>To get the exact posterior we need to compute the marginal likelihood <span class="math notranslate nohighlight">\(p(D)\)</span> which is intractable</p>
+<div class="math notranslate nohighlight">
+\[
+p(D) = \int p(D \mid \theta) p(\theta) d\theta.
+\]</div>
+<p>We can use MCMC to sample from the posterior distribution <span class="math notranslate nohighlight">\(p(\theta \mid D)\)</span> and then use these samples to approximate the posterior predictive distribution</p>
+<div class="math notranslate nohighlight">
+\[
+p(y^* \mid x^*, D) = \int p(y^* \mid x^*, \theta) p(\theta \mid D) d\theta \approx \frac{1}{N} \sum_{i=1}^{N} p(y^* \mid x^*, \theta_i)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\theta_i\)</span> are samples drawn from the posterior distribution <span class="math notranslate nohighlight">\(p(\theta \mid D)\)</span>. See, here we have a double integral, one for the marginal likelihood and one for the posterior predictive distribution. MCMC helps us to avoid computing the marginal likelihood. Instead, we can directly sample from the posterior distribution and use these samples to approximate the posterior predictive distribution, by computing only the likelihood <span class="math notranslate nohighlight">\(p(y^* \mid x^*, \theta)\)</span> that is usually tractable.</p>
+<p>In this case the MCMC algorithm is as follows:</p>
+<ul class="simple">
+<li><p>Start from an initial value <span class="math notranslate nohighlight">\(\theta_0\)</span>.</p></li>
+<li><p>Generate a new candidate value <span class="math notranslate nohighlight">\(\theta'\)</span> from a proposal distribution <span class="math notranslate nohighlight">\(q(\theta' \mid \theta)\)</span>.</p></li>
+<li><p>Compute the acceptance ratio, that is the ratio between the posterior of the candidate value and the posterior of the current value.</p></li>
+</ul>
+</section>
+</section>
+<section id="hamiltonian-monte-carlo">
+<h2>Hamiltonian Monte Carlo<a class="headerlink" href="#hamiltonian-monte-carlo" title="Link to this heading">#</a></h2>
+</section>
+<section id="langevin-dynamics">
+<h2>Langevin Dynamics<a class="headerlink" href="#langevin-dynamics" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://friedmanroy.github.io/blog/2022/Langevin/#mjx-eqn%3Aeq%3Alangevin">https://friedmanroy.github.io/blog/2022/Langevin/#mjx-eqn%3Aeq%3Alangevin</a></p>
 </section>
 <section id="mcmc-vs-vi">
 <h2>MCMC vs VI<a class="headerlink" href="#mcmc-vs-vi" title="Link to this heading">#</a></h2>
@@ -454,8 +531,16 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chains">Markov Chains</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-estimate">Monte Carlo Estimate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-estimate">Monte Carlo Estimate</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-monte-carlo">Simple Monte Carlo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chains">Markov Chains</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo (MCMC)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hamiltonian-monte-carlo">Hamiltonian Monte Carlo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#langevin-dynamics">Langevin Dynamics</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mcmc-vs-vi">MCMC vs VI</a></li>
 </ul>
   </nav></div>
